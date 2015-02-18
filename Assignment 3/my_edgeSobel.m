@@ -5,7 +5,7 @@
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-function [edgeMagnitued, edgeOrientation] = my_edgeSobel(image, THRESHOLD_VAL)
+function [edgeMagnitude, edgeOrientation] = my_edgeSobel(image, THRESHOLD_VAL)
 
 % Partial derivatives (discrete) with respect to x and y.
 % partialX = image(x+1, y) - image(x,y);
@@ -23,8 +23,6 @@ verticalOperator = [1 2 1; 0 0 0; -1 -2 -1];
 horizontalGradient = imfilter(image, horizontalOperator);
 verticalGradient = imfilter(image, verticalOperator);
 
-figure(1); imshow(horizontalGradient);
-figure(2); imshow(verticalGradient);
-
+edgeMagnitude = horizontalGradient + verticalGradient;
 end
 
