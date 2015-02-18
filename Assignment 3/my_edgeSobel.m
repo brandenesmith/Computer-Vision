@@ -27,15 +27,18 @@ verticalGradient = double (imfilter(image, verticalOperator));
 
 % The idea is that the magnitude of the gradient is the square root
 % of the partial with respect to x squared plus the partial with respect
-% to y squared. 
+% to y squared.
 horizontalSquared = horizontalGradient.^2;
 verticalSquared = verticalGradient.^2;
 sumOfSquared = horizontalSquared + verticalSquared;
 edgeMagnitude = sqrt(sumOfSquared);
 
+% The direction of the gradient (theta) is the tangent inverse of
+% partial with respct to y divided by the partial with respect to x
+edgeOrientation = atan(verticalGradient./horizontalGradient);
 
 % For each channel if the value of the edgeMagnitude image is greater
-% than the threhold keep it otherwise set the value to zero. 
+% than the threhold keep it otherwise set the value to zero.
 for c=1:channels
     for k=1:height
         for l=1:width
@@ -46,6 +49,5 @@ for c=1:channels
     end
 end
 
-edgeOrientation = zeros(height, width, channels);
 end
 
