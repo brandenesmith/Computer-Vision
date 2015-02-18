@@ -11,8 +11,6 @@ function [edgeMagnitude, edgeOrientation] = my_edgeSobel(image, THRESHOLD_VAL)
 % partialX = image(x+1, y) - image(x,y);
 % partialY = image(x, y+1) - image(x,y);
 
-
-
 % The two sobel operators that are commonly used
 % the first horizontalOperator shold be scaled by the partial with
 % respect to x and the verticalOperator should be scaled with respect to
@@ -20,39 +18,34 @@ function [edgeMagnitude, edgeOrientation] = my_edgeSobel(image, THRESHOLD_VAL)
 horizontalOperator = [-1 0 1; -2 0 2; -1 0 1];
 verticalOperator = [1 2 1; 0 0 0; -1 -2 -1];
 
-horizontalGradient = imfilter(image, horizontalOperator);
-verticalGradient = imfilter(image, verticalOperator);
+% Get the size of the image.
+[height, width, channels] = size(image);
 
-unThresholdedMagnitude = horizontalGradient + verticalGradient;
-[height, width, channels] = size(unThresholdedMagnitude);
+% Compute the horizontal and vertical gradients with double precision.
+horizontalGradient = double (imfilter(image, horizontalOperator));
+verticalGradient = double (imfilter(image, verticalOperator));
 
-edgeMagnitude = zeros(height, width, channels);
+% The idea is that the magnitude of the gradient is the square root
+% of the partial with respect to x squared plus the partial with respect
+% to y squared. 
+horizontalSquared = horizontalGradient.^2;
+verticalSquared = verticalGradient.^2;
+sumOfSquared = horizontalSquared + verticalSquared;
+edgeMagnitude = sqrt(sumOfSquared);
 
-unThresholdedRed = unThresholdedMagnitude(:,:,1);
-unThresholdedGreen = unThresholdedMagnitude(:,:,2);
-unThresholdedBlue = unThresholdedMagnitude(:,:,3);
 
-thresholdedRed = threshold(unThresholdedRed, THRESHOLD_VAL);
-thresholdedGreen = threshold(unThresholdedGreen, THRESHOLD_VAL);
-thresholdedBlue = threshold(unThresholdedBlue, THRESHOLD_VAL);
-
-edgeMagnitude(:,:, 1) = thresholdedRed;
-edgeMagnitude(:,:, 2) = thresholdedGreen;
-edgeMagnitude(:,:, 3) = thresholdedBlue;
-
-    function thresholdedChannel = threshold(image, THRESHOLD_VAL)
-        [x,y,z] = size(image);
-        thresholdedChannel = zeros(x,y,z);
-        
-        for i=1:x
-            for j=1:y
-                if (image(i,j) >= THRESHOLD_VAL)
-                    thresholdedChannel(i,j) = image(i,j);
-                end
+% For each channel if the value of the edgeMagnitude image is greater
+% than the threhold keep it otherwise set the value to zero. 
+for c=1:channels
+    for k=1:height
+        for l=1:width
+            if (edgeMagnitude(k,l,c) < THRESHOLD_VAL)
+                edgeMagnitude(k,l,c) = 0;
             end
         end
     end
+end
 
-edgeOrientation = zeros();
+edgeOrientation = zeros(height, width, channels);
 end
 
