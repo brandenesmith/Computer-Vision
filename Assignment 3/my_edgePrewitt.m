@@ -13,6 +13,11 @@ function [edgeMagnitude, edgeOrientation] = my_edgePrewitt(image, THRESHOLD)
 horizontalOperator = [-1 0 1; -1 0 1; -1 0 1];
 verticalOperator = [-1 -1 -1; 0 0 0; 1 1 1];
 
+% These are additional opeators given in the lecture slides.
+% Need to find out more about them and decide to either use
+% or not use them
+% horizontalOperator = [-1 0 1; -2 0 2; -1 0 1];
+% verticalOperator = [-1 -2 -1; 0 0 0; 1 2 1];
 
 horizontalGradient = double(imfilter(image, horizontalOperator));
 verticalGradient = double(imfilter(image, verticalOperator));
