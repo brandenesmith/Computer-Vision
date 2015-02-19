@@ -39,15 +39,23 @@ edgeOrientation = atan(verticalGradient./horizontalGradient);
 
 % For each channel if the value of the edgeMagnitude image is greater
 % than the threhold keep it otherwise set the value to zero.
+% We also clean up the edgeOrientation image. It is ok for an edge to have 
+% the orientation zero however, if there is no edge in the magnitude image
+% there should be no oritentation edge in the orientation image. 
 for c=1:channels
     for k=1:height
         for l=1:width
             if (edgeMagnitude(k,l,c) < THRESHOLD_VAL)
                 edgeMagnitude(k,l,c) = 0;
             end
+            if (edgeMagnitude(k,l,c) == 0)
+                edgeOrientation(k,l,c) = -inf;
+            end
         end
     end
 end
+
+
 
 end
 
