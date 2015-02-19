@@ -10,8 +10,9 @@ function [edgeMagnitude, edgeOrientation] = my_edgePrewitt(image, THRESHOLD)
 [height, width, channels] = size(image);
 
 % The prewitt operators.
-horizontalOperator = [-1 -1 -1; 0 0 0; 1 1 1];
-verticalOperator = [-1 0 1; -1 0 1; -1 0 1];
+horizontalOperator = [-1 0 1; -1 0 1; -1 0 1];
+verticalOperator = [-1 -1 -1; 0 0 0; 1 1 1];
+
 
 horizontalGradient = double(imfilter(image, horizontalOperator));
 verticalGradient = double(imfilter(image, verticalOperator));
