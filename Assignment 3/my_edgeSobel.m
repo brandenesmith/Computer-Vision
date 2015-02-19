@@ -7,10 +7,6 @@
 
 function [edgeMagnitude, edgeOrientation] = my_edgeSobel(image, THRESHOLD_VAL)
 
-% Partial derivatives (discrete) with respect to x and y.
-% partialX = image(x+1, y) - image(x,y);
-% partialY = image(x, y+1) - image(x,y);
-
 % The two sobel operators that are commonly used
 % the first horizontalOperator shold be scaled by the partial with
 % respect to x and the verticalOperator should be scaled with respect to
@@ -55,8 +51,6 @@ for c=1:channels
         end
     end
 end
-
-
 
 end
 
