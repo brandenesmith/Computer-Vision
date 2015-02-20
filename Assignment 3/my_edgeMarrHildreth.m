@@ -1,40 +1,37 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % my_edgeMarrHildreth.m
-% 
+%
 % Author: Branden E. Smith & Mathew Reny
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 function edgeMagnitude = my_edgeMarrHildreth(image, sigma)
 
-% Determine filter size N = [sigma x 3] x 2 + 1
-N = (sigma * 3)*2 + 1;
+% Determine filter size N = [sigma x 3] x 2 + 1 and the
+% size of the image.
+N = ceil(sigma * 3)*2 + 1;
+[height, width, channels] = size(image);
 
-% Differential Operators
-partialX = [0 0 0; 0 -1 1; 0 0 0];
-partialY = [0 0 0; 0 -1 0; 0 1 0];
+log = fspecial('log', N, sigma);
+conv = double(imfilter(image, log));
 
-% Gaussian filter of size N as shown on the slide in class.
-G = double(zeros(N));
+% Threshold the image
+conv = im2bw(conv, 0);
 
-for i=1:N
-    for j=1:N
-        G(i,j) = exp(-(i^2 + j^2)/(2*pi*(sigma^2)));
+padded = padarray(conv, [1,1]);
+edgeMagnitude = zeros(height, width, channels);
+
+% Zero Crossings
+for i=1:height
+    for j=1:width
+        if (padded(i+1, j+1) == 0)
+            A = padded(i:(i+2) , j:(j+2));
+            colSum = sum(A);
+            totSum = sum(colSum);
+            if (totSum == 0)
+                edgeMagnitude(i,j) = 1;
+            end
+        end
     end
 end
-
-% Step one
-iPrime = imfilter(image, G);
-
-% Take the first Derivative of iPrime
-iPrimeFirstDerivX = imfilter(iPrime, partialX);
-iPrimeFirstDerivY = imfilter(iPrime, partialY);
-
-% Take the second Derivative of iPrime
-iPrimeSecondDerivX = imfilter(iPrimeFirstDerivX, partialX);
-iPrimeSecondDerivY = imfilter(iPrimeFirstDerivY, partialY);
-
-iDoublePrime = iPrimeSecondDerivX + iPrimeSecondDerivY;
-
-edgeMagnitude = iDoublePrime;
 
 end
