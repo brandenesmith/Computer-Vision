@@ -18,7 +18,7 @@ G = double(zeros(N));
 
 for i=1:N
     for j=1:N
-        G(i,j) = exp(-(i^2 + j^2)/(2*pi*sigma));
+        G(i,j) = exp(-(i^2 + j^2)/(2*pi*(sigma^2)));
     end
 end
 
