@@ -24,7 +24,6 @@ xSquared = derivOfGaussianX.^2;
 ySquared = derivOfGaussianY.^2;
 
 gradientMagnitude = double(sqrt(xSquared + ySquared));
-gradientOrientation = double(atan(derivOfGaussianY./derivOfGaussianX));
 
 % Threshold magnitude at min value
 for c=1:channels
@@ -36,6 +35,8 @@ for c=1:channels
         end
     end
 end
+
+gradientOrientation = double(atan(derivOfGaussianY./derivOfGaussianX));
 
 % Non-maximum suppression (Thin multi-pixel "ridges" down to single pixel
 % width
