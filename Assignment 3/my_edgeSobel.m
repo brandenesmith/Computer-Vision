@@ -12,8 +12,8 @@ function [edgeMagnitude, edgeOrientation] = my_edgeSobel(image, THRESHOLD_VAL)
 % respect to x and the verticalOperator should be scaled with respect to
 % y. Omitting the 1/8 th term makes no difference in edge detection 
 % however, it is necessary for computing the correct gradient. 
-horizontalOperator = (1/8) * [-1 0 1; -2 0 2; -1 0 1];
-verticalOperator = (1/8) * [1 2 1; 0 0 0; -1 -2 -1];
+horizontalOperator = [-1 0 1; -2 0 2; -1 0 1];
+verticalOperator = [1 2 1; 0 0 0; -1 -2 -1];
 
 % Get the size of the image.
 [height, width, channels] = size(image);
