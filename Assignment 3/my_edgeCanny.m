@@ -9,8 +9,11 @@ function canny = my_edgeCanny(image, L, H, sigma)
 % Setup
 [height, width, channels] = size(image);
 
+% Filter Size
+N = ceil(sigma *3)*2 + 1;
+
 % Filter image with the x,y derivatives of the Gaussian
-gaussian = fspecial('Gaussian', [5, 5], sigma);
+gaussian = fspecial('Gaussian', N, sigma);
 gaussianImage = imfilter(image, gaussian);
 
 partialX = [-1 1];
@@ -25,25 +28,27 @@ ySquared = derivOfGaussianY.^2;
 
 gradientMagnitude = double(sqrt(xSquared + ySquared));
 
-% Threshold magnitude at min value
-for c=1:channels
-    for i=1:height
-        for j=1:width
-            if (gradientMagnitude(i,j,c) < L)
-                gradientMagnitude(i,j,c) = 0;
-            end
-        end
-    end
-end
-
-gradientOrientation = double(atan(derivOfGaussianY./derivOfGaussianX));
-
 % Non-maximum suppression (Thin multi-pixel "ridges" down to single pixel
 % width
 
-% Hysteresis thresholding and linking
-% -Define two thresholds: low and high
-% -Use the high threshold to start edge curves and the
-%  low to continue them
-canny = gaussianImage;
+tempValues = ones(height, width, channels);
+tempValues = floor(gradientMagnitude./H);
+tempValues = tempValues./tempValues;
+
+boxFilter = [1 1 1; 1 1 1; 1 1 1];
+
+filtered = ones(height, width, channels);
+
+while (max(filtered(:)) >= 1)
+    tempValues(isnan(tempValues)) = 0;
+    filtered = imfilter(tempValues, boxFilter);
+    filtered = filtered./filtered;
+    filtered = filtered - tempValues;
+    filtered(isnan(filtered)) = 0;
+    filtered = floor(gradientMagnitude./L).*filtered;
+    tempValues = tempValues + filtered;
+    tempValues = tempValues./tempValues;
+end
+
+canny = im2bw(tempValues, 0);
 end
