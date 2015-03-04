@@ -7,7 +7,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 function points = get_interest_points(image)
 % Sigma for Gaussian Blur
-SIGMA = 7;
+SIGMA = 1;
 
 % Image size information (if needed).
 [x, y, z] = size(image);
@@ -17,23 +17,29 @@ SIGMA = 7;
 % convolving the original image with derivatives of Guassians.
 
 filter = fspecial('Gaussian', 7, SIGMA);
-image = imfilter(image, filter);
+image = double(imfilter(image, filter));
 
 % Partial derivative filters
-partialX = [-1 1];
-partialY = [-1; 1];
+d_x = [-1 0 1; -1 0 1; -1 0 1];
+d_y = transpose(d_x);
 
 % Filter the image with partial derivative filters.
-partialX = imfilter(image, partialX);
-partialY = imfilter(image, partialY);
+I_x = imfilter(image, d_x);
+I_y = imfilter(image, d_y);
 
 % Square the partial derivative images.
-partial_x_squared = partialX.*partialX;
-partial_y_squared = partialY.*partialY;
+I_xx = I_x.*I_x;
+I_yy = I_y.*I_y;
+I_xy = I_x.*I_y;
 
-% Convert Partials to Gray
-partial_x_squared = rgb2gray(partial_x_squared);
-partial_y_squared = rgb2gray(partial_y_squared);
+I_xxg = imfilter(I_xx, filter);
+I_yyg = imfilter(I_yy, filter);
+I_xyg = imfilter(I_xy, filter);
+
+% Multiply both images
+response = ((I_xxg.*I_yyg)-(I_xyg.*I_xyg)) - .04*(I_xxg + I_yyg).^2;
+
+
 
 %%
 % Compute the three images corresponding to the outer products of these
@@ -52,5 +58,5 @@ partial_y_squared = rgb2gray(partial_y_squared);
 % Find local maxima above a certain threshold and report them as detected
 % feature point locations. 
 
-
+points = response;
 end
