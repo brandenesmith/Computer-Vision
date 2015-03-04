@@ -12,13 +12,10 @@ SIGMA = 7;
 % Image size information (if needed).
 [x, y, z] = size(image);
 
-% Compute M matrix for each image window to get their cornerness
-% scores.
+%%
+% Compute the horizontal and vertical derivatives of the image by
+% convolving the original image with derivatives of Guassians.
 
-% (Optionally) blur the image and compute the 
-% partial derivatives of the image with respect 
-% to x and y. This can be tweeked to provide
-% varying results. 
 filter = fspecial('Gaussian', 7, SIGMA);
 image = imfilter(image, filter);
 
@@ -38,10 +35,22 @@ partial_y_squared = partialY.*partialY;
 partial_x_squared = rgb2gray(partial_x_squared);
 partial_y_squared = rgb2gray(partial_y_squared);
 
+%%
+% Compute the three images corresponding to the outer products of these
+% gradients. (The matrix is symmetric, so only three entries are needed.
 
-% Find points whose surrounding window gave large corner response
+
+%%
+% Convolve each of these images with a larger Gaussian.
+
+%%
+% Compute a scalar interest measure. i.e. Find points whose surrounding 
+% window gave large corner response
 % i.e. (f > threshold).
 
-% Take the points of local maxima, i.e., perform non-maximum suppression.
+%%
+% Find local maxima above a certain threshold and report them as detected
+% feature point locations. 
+
 
 end
