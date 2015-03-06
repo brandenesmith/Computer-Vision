@@ -20,8 +20,8 @@ end
 %%
 % Compute the horizontal and vertical derivatives of the image by
 % convolving the original image with derivatives of Guassians.
-gaussian_1 = fspecial('Gaussian', 27, SIGMA);
-gaussian_2 = fspecial('Gaussian', 107, SIGMA);
+gaussian_1 = fspecial('Gaussian', 3, SIGMA);
+gaussian_2 = fspecial('Gaussian', 7, SIGMA);
 image = double(imfilter(image, gaussian_1));
 
 % Partial derivative filters
@@ -49,7 +49,7 @@ I_xyg = imfilter(I_xy, gaussian_2);
 % Compute a scalar interest measure. i.e. Find points whose surrounding
 % window gave large corner response
 % i.e. (f > threshold).
-response = ((I_xxg.*I_yyg)-(I_xyg.*I_xyg)) - ALPHA*(I_xxg + I_yyg).^2;
+response = ((I_xxg.*I_yyg)-(I_xyg.^2)) - ALPHA*(I_xxg + I_yyg).^2;
 
 %%
 % Find local maxima above a certain threshold and report them as detected
