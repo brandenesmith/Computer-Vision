@@ -1,4 +1,9 @@
 # Computer-Vision
+
+## Academic Integrity Notice
+This repository contains source code used for academic purposes.  Any party reproducing this content for academic purposes should consult their respective institution’s Academic Integrity Policy.  Contributors to this repository strictly prohibit any reproduction, or use, of this source code that violates the Academic Integrity Policy of any institution and are not responsible for the violations of any party.  
+
+## Contents
 The Computer-Vision repository consists of four assignments from a course in computer vision. The four directories are 
 - Assignment 1
 - Assignment 2
